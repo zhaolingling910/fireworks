@@ -1,7 +1,6 @@
 <template>
-  <div class="fireworks-container" @click="launchFirework">
+  <div class="fireworks-container" @click="launchFirework" @touchstart.prevent="launchFireworkTouch">
     <canvas ref="canvas"></canvas>
-    <div class="hint">Click anywhere to launch fireworks!</div>
     <div class="love-message" :class="{ show: showMessage }">
       <span class="love-text">刘少龙我宣你</span>
     </div>
@@ -46,9 +45,21 @@ export default {
   methods: {
     initCanvas() {
       const canvas = this.$refs.canvas
-      this.width = canvas.width = window.innerWidth
-      this.height = canvas.height = window.innerHeight
+      const dpr = window.devicePixelRatio || 1
+      const w = window.innerWidth
+      const h = window.innerHeight
+      canvas.width = w * dpr
+      canvas.height = h * dpr
+      canvas.style.width = w + 'px'
+      canvas.style.height = h + 'px'
+      this.width = w
+      this.height = h
       this.ctx = canvas.getContext('2d')
+      this.ctx.scale(dpr, dpr)
+    },
+    launchFireworkTouch(e) {
+      const t = e.touches[0]
+      if (t) this.createRocket(t.clientX, this.height)
     },
     autoLaunch() {
       // Launch 2-3 fireworks at a time, every 400ms
@@ -375,17 +386,6 @@ export default {
 canvas {
   display: block;
 }
-.hint {
-  position: absolute;
-  bottom: 30px;
-  width: 100%;
-  text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 16px;
-  font-family: Arial, sans-serif;
-  pointer-events: none;
-  letter-spacing: 2px;
-}
 .love-message {
   position: absolute;
   top: 50%;
@@ -401,7 +401,8 @@ canvas {
 }
 .love-text {
   display: inline-block;
-  font-size: 72px;
+  font-size: min(72px, 12vw);
+  white-space: nowrap;
   font-weight: bold;
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   letter-spacing: 8px;
