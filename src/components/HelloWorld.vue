@@ -2,6 +2,9 @@
   <div class="fireworks-container" @click="launchFirework">
     <canvas ref="canvas"></canvas>
     <div class="hint">Click anywhere to launch fireworks!</div>
+    <div class="love-message" :class="{ show: showMessage }">
+      <span class="love-text">刘少龙我宣你</span>
+    </div>
   </div>
 </template>
 
@@ -20,18 +23,24 @@ export default {
       rockets: [],
       animationId: null,
       hue: 0,
-      autoLaunchTimer: null
+      autoLaunchTimer: null,
+      showMessage: false,
+      messageTimer: null
     }
   },
   mounted() {
     this.initCanvas()
     this.animate()
     this.autoLaunch()
+    this.messageTimer = setTimeout(() => {
+      this.showMessage = true
+    }, 3000)
     window.addEventListener('resize', this.initCanvas)
   },
   beforeDestroy() {
     cancelAnimationFrame(this.animationId)
     clearInterval(this.autoLaunchTimer)
+    clearTimeout(this.messageTimer)
     window.removeEventListener('resize', this.initCanvas)
   },
   methods: {
@@ -376,5 +385,41 @@ canvas {
   font-family: Arial, sans-serif;
   pointer-events: none;
   letter-spacing: 2px;
+}
+.love-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1.2s ease-out, transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.love-message.show {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.love-text {
+  display: inline-block;
+  font-size: 72px;
+  font-weight: bold;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  letter-spacing: 8px;
+  background: linear-gradient(135deg, #ff4466, #ff88aa, #ffaacc, #ff4466);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(255, 68, 102, 0.8);
+  animation: gradientShift 3s ease infinite, floatUp 2s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 20px rgba(255, 100, 150, 0.6));
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes floatUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(-10px); }
 }
 </style>
