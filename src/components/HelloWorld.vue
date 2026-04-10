@@ -406,21 +406,28 @@ canvas {
   font-weight: bold;
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
   letter-spacing: 8px;
-  background: linear-gradient(135deg, #ff4466, #ff88aa, #ffaacc, #ff4466);
-  background-size: 200% 200%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 30px rgba(255, 68, 102, 0.8);
-  animation: gradientShift 3s ease infinite, floatUp 2s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 20px rgba(255, 100, 150, 0.6));
+  color: #ffccdd;
+  text-shadow:
+    0 0 10px #ff4466,
+    0 0 20px #ff4466,
+    0 0 40px #ff4466,
+    0 0 80px #ff88aa;
+  animation: glowPulse 2s ease-in-out infinite alternate;
 }
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-@keyframes floatUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(-10px); }
+@keyframes glowPulse {
+  from {
+    text-shadow:
+      0 0 10px #ff4466,
+      0 0 20px #ff4466,
+      0 0 40px #ff4466,
+      0 0 80px #ff88aa;
+  }
+  to {
+    text-shadow:
+      0 0 15px #ffaacc,
+      0 0 30px #ff4466,
+      0 0 60px #ff4466,
+      0 0 100px #ff88aa;
+  }
 }
 </style>
